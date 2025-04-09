@@ -11,12 +11,11 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('friendships', function (Blueprint $table) {
-            $table->foreignId('player1');
-            $table->foreignId('player2');
-            $table->string('status', 20);
-            $table->unsignedBigInteger('player_id');
-
+            $table->unsignedBigInteger('player1');
+            $table->unsignedBigInteger('player2');
+            $table->string('status', 1);
             $table->timestamps();
+  
         });
     }
 

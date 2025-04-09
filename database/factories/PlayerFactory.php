@@ -26,10 +26,11 @@ class PlayerFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique->email(),
             'email_verified_at' => now(),
-            'username' => $this->faker->text(50),
+            'username' => $this->faker->username(15),
             'password' => \Hash::make('password'),
             'remember_token' => Str::random(10),
-            'rating' => $this->faker->randomNumber(0),
+            'rating' => $this->faker->numberBetween(1,2000),
+            'user_type_id' => $this->faker->numberBetween(1,3)
         ];
     }
 

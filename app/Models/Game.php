@@ -17,10 +17,13 @@ class Game extends Model
         'result_id',
         'game_type_id',
         'played_at',
-        'FEN',
+        'PGN',
     ];
 
     protected $searchableFields = ['*'];
+    protected $primaryKey = null;
+
+    public $incrementing = false;
 
     protected $casts = [
         'played_at' => 'datetime',

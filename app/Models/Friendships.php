@@ -11,12 +11,20 @@ class Friendships extends Model
     use HasFactory;
     use Searchable;
 
-    protected $fillable = ['player2', 'status', 'player_id'];
+    protected $fillable = ['player2', 'status', 'player1'];
 
     protected $searchableFields = ['*'];
 
+    protected $primaryKey = null;
+
+    public $incrementing = false;
+
     public function player()
     {
-        return $this->belongsTo(Player::class, 'player_id', 'player_id');
+        return $this->belongsTo(Player::class, 'player1', 'player_id');
+    }
+    public function secondPlayer()
+    {
+        return $this->belongsTo(Player::class, 'player2', 'player_id');
     }
 }

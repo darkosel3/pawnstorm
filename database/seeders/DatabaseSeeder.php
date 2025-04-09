@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -12,7 +13,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // $this->call(FriendshipsSeeder::class);
-        // $this->call(GameSeeder::class);
+        $this->call(UserTypeSeeder::class);
+        $this->call(ResultSeeder::class);
+        $this->call(GameTypeSeeder::class);
         $this->call(PlayerSeeder::class);
+        $this->call(FriendshipsSeeder::class);
+        $this->call(GameSeeder::class);
+
     }
 }

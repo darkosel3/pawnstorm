@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Friendships;
+use App\Models\Player;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -22,9 +23,11 @@ class FriendshipsFactory extends Factory
      */
     public function definition(): array
     {
+        $status = $this->faker->randomElement(['A', 'P']);
         return [
-            'status' => $this->faker->text(20),
-            'player_id' => \App\Models\Player::factory(),
+            'status' => $status,
+            'player1' => Player::factory(),
+            'player2' => Player::factory()
         ];
     }
 }

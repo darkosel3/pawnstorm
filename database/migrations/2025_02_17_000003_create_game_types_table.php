@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->bigIncrements('game_type_id');
             $table->string('naziv', 20);
             $table->string('time_format', 10);
-
+            $table->string('increment', 10); //increment nije dodat u dokumentaciju
             $table->timestamps();
         });
     }

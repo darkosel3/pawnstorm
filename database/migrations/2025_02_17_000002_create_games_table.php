@@ -17,8 +17,7 @@ return new class extends Migration {
             $table->foreignId('result_id');
             $table->foreignId('game_type_id');
             $table->dateTime('played_at');
-            $table->jsonb('FEN');
-
+            $table->longText('PGN');
             $table->timestamps();
         });
     }

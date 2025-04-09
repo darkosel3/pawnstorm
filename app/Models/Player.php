@@ -51,7 +51,13 @@ class Player extends Authenticatable
 
     public function allFriendships()
     {
-        return $this->hasMany(Friendships::class, 'player_id', 'player_id');
+        return $this->hasMany(Friendships::class, 'player1', 'player_id');
+    }
+
+    public function receivedFriendships()
+    {
+        // Get friendships where the player is player2
+        return $this->hasMany(Friendships::class, 'player2', 'player_id');
     }
 
     public function isSuperAdmin(): bool
