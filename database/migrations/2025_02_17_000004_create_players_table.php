@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('username', 250);
             $table->string('password', 250);
             $table->string('remember_token', 250)->nullable();
-            $table->integer('rating');
+            $table->integer('rating')->nullable();
             $table->foreignId('user_type_id')->nullable();
             $table->timestamps();
         });

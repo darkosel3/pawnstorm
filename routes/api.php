@@ -14,8 +14,17 @@ use App\Http\Controllers\Api\PlayerController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+//CRUD Player
+//CREATE
+Route::post('player/',[PlayerController::class, 'create']);
+//READ
+Route::get('/players',[PlayerController::class, 'index']);
+Route::get('/player/{player}',[PlayerController::class, 'show']);
+//UPDATE
+Route::patch('player/{player}',[PlayerController::class, 'update']);
+//DELETE
+Route::delete('/player/{player}',[PlayerController::class, 'destroy']);
 
-Route::get('/players',[PlayerController::class,'index']);
 
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
 

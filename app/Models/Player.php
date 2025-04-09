@@ -27,7 +27,6 @@ class Player extends Authenticatable
         'email',
         'username',
         'password',
-        'rating',
         'user_type_id',
     ];
 
