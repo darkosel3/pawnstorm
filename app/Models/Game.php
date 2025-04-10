@@ -21,7 +21,7 @@ class Game extends Model
     ];
 
     protected $searchableFields = ['*'];
-    protected $primaryKey = null;
+    protected $primaryKey = 'game_id';
 
     public $incrementing = false;
 

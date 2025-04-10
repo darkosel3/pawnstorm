@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PlayerController;
+use App\Http\Controllers\Api\GameController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,14 +17,24 @@ use App\Http\Controllers\Api\PlayerController;
 */
 //CRUD Player
 //CREATE
-Route::post('player/',[PlayerController::class, 'create']);
-//READ
-Route::get('/players',[PlayerController::class, 'index']);
-Route::get('/player/{player}',[PlayerController::class, 'show']);
-//UPDATE
-Route::patch('player/{player}',[PlayerController::class, 'update']);
-//DELETE
-Route::delete('/player/{player}',[PlayerController::class, 'destroy']);
+Route::prefix('players')->group(function () {
+    Route::post('/', [PlayerController::class, 'create'])->name('api.players.create');
+    Route::get('/', [PlayerController::class, 'index'])->name('api.players.index');
+    Route::get('/{player}', [PlayerController::class, 'show'])->name('api.players.show');
+    Route::patch('/{player}', [PlayerController::class, 'update'])->name('api.players.update');
+    Route::delete('/{player}', [PlayerController::class, 'destroy'])->name('api.players.destroy');
+});
+Route::prefix('games')->group(function(){
+
+    Route::post('/',[GameController::class,'create'])->name('api.games.create');
+    Route::get('/',[GameController::class,'index'])->name('api.games.index');
+    Route::get('/{game}',[GameController::class,'show'])->name('api.games.show');
+    Route::delete('/{game}',[GameController::class,'destroy'])->name('api.games.destroy');
+
+});
+//CRUD games
+
+
 
 
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
