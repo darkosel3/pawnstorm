@@ -15,8 +15,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'api',
+        'passwords' => 'players',
     ],
 
     /*
@@ -39,12 +39,12 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'players',
         ],
 
         'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
+            'driver' => 'jwt',
+            'provider' => 'players',
             'hash' => false,
         ],
     ],
@@ -67,14 +67,14 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'players' => [
             'driver' => 'eloquent',
             'model' => App\Models\Player::class,
         ],
 
         // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
+        //     'driver' => 'eloquent',
+        //     'model' => App\Models\User::class, // čak i ako koristiš samo Player model
         // ],
     ],
 
@@ -94,8 +94,8 @@ return [
     */
 
     'passwords' => [
-        'users' => [
-            'provider' => 'users',
+        'players' => [
+            'provider' => 'players',
             'table' => 'password_reset_tokens',
             'expire' => 60,
             'throttle' => 60,

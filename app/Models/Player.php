@@ -8,13 +8,16 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Player extends Authenticatable
+
+
+class Player extends Authenticatable implements JWTSubject
 {
     use Notifiable;
     use HasFactory;
     use Searchable;
-    use HasApiTokens;
+    
 
     protected $primaryKey = 'player_id';
 
@@ -35,7 +38,7 @@ class Player extends Authenticatable
     protected $hidden = ['password', 'remember_token'];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        // 'email_verified_at' => 'datetime',
     ];
 
     public function games_white()
@@ -63,4 +66,13 @@ class Player extends Authenticatable
     {
         return in_array($this->email, config('auth.super_admins'));
     }
+    public function getJWTIdentifier()
+    {
+        return $this->getKey(); // player_id
+    }
+    public function getJWTCustomClaims(){
+        return []; // dodatni podaci u token, nije potrebno ali moramo da ga implementiramo zbog nasledjivanja
+    }
+
+
 }
