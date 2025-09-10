@@ -2,19 +2,19 @@
 
 namespace Database\Factories;
 
-use App\Models\Friendships;
+use App\Models\Friendship;
 use App\Models\Player;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class FriendshipsFactory extends Factory
+class FriendshipFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Friendships::class;
+    protected $model = Friendship::class;
 
     /**
      * Define the model's default state.

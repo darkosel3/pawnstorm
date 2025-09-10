@@ -6,7 +6,7 @@ use App\Models\Scopes\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Friendships extends Model
+class Friendship extends Model
 {
     use HasFactory;
     use Searchable;
@@ -17,7 +17,7 @@ class Friendships extends Model
 
     protected $primaryKey = null;
 
-    public $incrementing = false;
+    public $incrementing = TRUE;
 
     public function player()
     {

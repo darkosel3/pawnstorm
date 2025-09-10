@@ -23,7 +23,7 @@ class Game extends Model
     protected $searchableFields = ['*'];
     protected $primaryKey = 'game_id';
 
-    public $incrementing = false;
+    public $incrementing = TRUE;
 
     protected $casts = [
         'played_at' => 'datetime',

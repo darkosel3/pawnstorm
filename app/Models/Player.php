@@ -21,7 +21,7 @@ class Player extends Authenticatable implements JWTSubject
 
     protected $primaryKey = 'player_id';
 
-    public $incrementing = 'int';
+    public $incrementing = TRUE;
 
     protected $keyType = 'int';
 
@@ -51,15 +51,15 @@ class Player extends Authenticatable implements JWTSubject
         return $this->hasMany(Game::class, 'black_player_id', 'player_id');
     }
 
-    public function allFriendships()
+    public function allFriendship()
     {
-        return $this->hasMany(Friendships::class, 'player1', 'player_id');
+        return $this->hasMany(Friendship::class, 'player1', 'player_id');
     }
 
-    public function receivedFriendships()
+    public function receivedFriendship()
     {
-        // Get friendships where the player is player2
-        return $this->hasMany(Friendships::class, 'player2', 'player_id');
+        // Get friendship where the player is player2
+        return $this->hasMany(Friendship::class, 'player2', 'player_id');
     }
 
     public function isSuperAdmin(): bool

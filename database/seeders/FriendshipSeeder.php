@@ -2,17 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Friendships;
+use App\Models\Friendship;
 use Illuminate\Database\Seeder;
 
-class FriendshipsSeeder extends Seeder
+class FriendshipSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Friendships::factory()
+        Friendship::factory()
             ->count(5)
             ->create();
     }
