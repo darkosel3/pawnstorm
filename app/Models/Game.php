@@ -38,4 +38,12 @@ class Game extends Model
     {
         return $this->belongsTo(Player::class, 'black_player_id', 'player_id');
     }
+    public function gameType()
+{
+    return $this->belongsTo(GameType::class, 'game_type_id', 'game_type_id');
+}
+    public function result()
+    {
+        return $this->belongsTo(Result::class, 'result_id', 'result_id');
+    }
 }

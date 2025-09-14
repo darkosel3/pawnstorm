@@ -4,118 +4,131 @@ namespace Tests\Feature;
 
 use App\Models\Player;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
+use Laravel\Sanctum\Sanctum;
+
 
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
-    /**
-     * A basic feature test example.
-     */
-    public function test_example(): void
+
+    /** @test */
+    public function user_can_register()
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
-    }
-
-
-    public function test_user_can_register(){
         $response = $this->postJson('/api/register', [
-            'name' => 'Test Player',
-            'email' => 'test1@example.com',
-            'username' => 'Tester1',
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'username' => 'testuser',
             'password' => 'password123',
-            'password_confirmation' => 'password123'
+            'user_type_id' => 3,
         ]);
+
         $response->assertStatus(201)
-                 ->assertJsonStructure([
-                    'user' => ['player_id', 'name','email'],
+                ->assertJson([
+                    'status' => 'success',
+                ])
+                ->assertJsonStructure([
+                    'status',
+                    'data' => [
+                        'player_id',
+                        'name',
+                        'email',
+                        'username',
+                        'created_at',
+                        'updated_at',
+                    ],
                     'token'
-                 ]);
-            // Provera u bazi
+                ]);
+
         $this->assertDatabaseHas('players', [
-            'email' => 'test1@example.com'
+            'email' => 'test@example.com',
+            'username' => 'testuser',
         ]);
     }
-    public function test_user_can_login(){
-        Player::create([
-           'name' => 'Test Player',
-            'username' => 'Tester1',
-            'email' => 'test2@example.com',
-            'password' => Hash::make('password123')
+
+    /** @test */
+    public function user_can_login_with_valid_credentials()
+    {
+        $player = Player::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password123')
         ]);
 
-
-        $response = $this->postJson('/api/login',[
-            'email' => 'test2@example.com',
-            'password' => 'password123'
+        $response = $this->postJson('/api/login', [
+            'email' => 'test@example.com',
+            'password' => 'password123',
         ]);
 
         $response->assertStatus(200)
-                 ->assertJsonStructure([
-                    'user' => ['player_id', 'name', 'email'],
+                ->assertJson([
+                    'status' => 'success',
+                ])
+                ->assertJsonStructure([
+                    'status',
+                    'data',
                     'token'
-                 ]);
+                ]);
     }
 
-    public function test_user_can_fetch_auth_user(){
-        $player = Player::create([
-            'name' => 'AuthUser',
-            'username' => 'AuthUser1',
-            'email' => 'authuser@gmail.com',
-            'password' => Hash::make('authpassword123')
+    /** @test */
+    public function user_cannot_login_with_invalid_credentials()
+    {
+        $response = $this->postJson('/api/login', [
+            'email' => 'wrong@example.com',
+            'password' => 'wrongpassword',
         ]);
 
-        $response = $this->postJson('/api/login',[
-            'email' => 'authuser@gmail.com',
-            'password' => 'authpassword123'
-        ]);
-        
-        $token = $response['token'];
-        
-        $meResponse = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
-        ])->getJson('/api/me');
-
-        $meResponse->assertStatus(200)
-                  ->assertJson([
-                    'name' => 'AuthUser',
-                    'username' => 'AuthUser1',
-                    'email' => 'authuser@gmail.com',
-                  ]);
-
+        $response->assertStatus(422)
+                ->assertJsonValidationErrors(['email']);
     }
 
-    public function test_user_can_logout(){
-        
-        $player = Player::create([
-        'name' => 'Test Logout',
-        'email' => 'logout@example.com',
-        'username' => 'LogoutUser',
-        'password' => Hash::make('password123'),
-        ]);
+    /** @test */
+    public function authenticated_user_can_get_profile()
+    {
+        $player = Player::factory()->create();
+        Sanctum::actingAs($player);
 
-        $loginResponse = $this->postJson('/api/login', [
-            'email' => 'logout@example.com',
-            'password'=> 'password123'
-        ]);
+        $response = $this->getJson('/api/me');
 
-        $token = $loginResponse['token'];
-    
-        $logoutResponse = $this->withHeaders(['Authorization' => 'Bearer ' . $token,])->postJson('/api/logout');
-        $logoutResponse->assertStatus(200)
-                      ->assertJson(['message' => 'Successfully logged out']);
-                      
-
-        $meResponse = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
-        ])->getJson('/api/me');
-            
-        $meResponse->assertStatus(401);
+        $response->assertStatus(200)
+                ->assertJson([
+                    'status' => 'success',
+                    'data' => [
+                        'player_id' => $player->player_id,
+                        'email' => $player->email,
+                    ]
+                ]);
     }
 
+    /** @test */
+    public function unauthenticated_user_cannot_access_protected_routes()
+    {
+        $response = $this->getJson('/api/me');
+        $response->assertStatus(401);
+    }
 
+    /** @test */
+    public function authenticated_user_can_logout()
+    {
+        $player = Player::factory()->create();
+        Sanctum::actingAs($player);
+
+        $response = $this->postJson('/api/logout');
+
+        $response->assertStatus(200)
+                ->assertJson([
+                    'status' => 'success',
+                    'message' => 'Successfully logged out'
+                ]);
+    }
+
+    /** @test */
+    public function registration_validates_required_fields()
+    {
+        $response = $this->postJson('/api/register', []);
+
+        $response->assertStatus(422)
+                ->assertJsonValidationErrors(['name', 'email', 'username', 'password', 'user_type_id']);
+                
+    }
 }

@@ -16,13 +16,19 @@ class GameController extends Controller
     }
     public function show(Game $game){
         return response()->json([
-            'status' => 'succes',
+            'status' => 'success',
             'data'=> $game
         ], 200);
     
     }
-    public function create(Request $request){
-        return response()->json([Game::create($request->all())]);
+    public function store(Request $request)
+    {
+        $game = Game::create($request->all());
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $game,
+        ], 201); // eksplicitno postavi 201
     }
 
     public function destroy(Game $game){

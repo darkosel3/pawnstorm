@@ -30,7 +30,7 @@ class PlayerFactory extends Factory
             'password' => \Hash::make('password'),
             'remember_token' => Str::random(10),
             'rating' => $this->faker->numberBetween(1,2000),
-            'user_type_id' => $this->faker->numberBetween(1,3)
+            'user_type_id' => 3
         ];
     }
 
