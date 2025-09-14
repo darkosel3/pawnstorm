@@ -17,6 +17,7 @@ class Player extends Authenticatable implements JWTSubject
     use Notifiable;
     use HasFactory;
     use Searchable;
+    use HasApiTokens;
     
 
     protected $primaryKey = 'player_id';
@@ -53,13 +54,13 @@ class Player extends Authenticatable implements JWTSubject
 
     public function allFriendship()
     {
-        return $this->hasMany(Friendship::class, 'player1', 'player_id');
+        return $this->hasMany(Friendship::class, 'player1_id', 'player_id');
     }
 
     public function receivedFriendship()
     {
         // Get friendship where the player is player2
-        return $this->hasMany(Friendship::class, 'player2', 'player_id');
+        return $this->hasMany(Friendship::class, 'player2_id', 'player_id');
     }
 
     public function isSuperAdmin(): bool

@@ -23,11 +23,11 @@ class FriendshipFactory extends Factory
      */
     public function definition(): array
     {
-        $status = $this->faker->randomElement(['A', 'P']);
+        $status = $this->faker->randomElement(['pending', 'accepted', 'declined']);
         return [
             'status' => $status,
-            'player1' => Player::factory(),
-            'player2' => Player::factory()
+            'player1_id' => Player::factory(),
+            'player2_id' => Player::factory()
         ];
     }
 }
