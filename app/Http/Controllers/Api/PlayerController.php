@@ -7,6 +7,9 @@ use App\Models\Player;
 use App\Models\Game;
 use App\Models\Friendship;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+
+
 
 class PlayerController extends Controller
 {
@@ -28,13 +31,35 @@ class PlayerController extends Controller
          ], 201);;
     }
 
-    public function index(){
-         return response()->json([
-        'status' => 'success',
-        'data' => Player::all(),
-    ], 200);
-    }
+   public function index(){
+    $players = Player::select(
+        'player_id as id',
+        'username', 
+        'name',
+        'email',
+        'rating',
+        'user_type_id as role',
+        'created_at',
+        'updated_at'
+    )->get()->map(function($player) {
+        return [
+            'id' => $player->id,
+            'username' => $player->username,
+            'name' => $player->name, 
+            'email' => $player->email,
+            'rating' => $player->rating ?? 0,
+            'role' => $player->role == 1 ? 'user' : 'admin', // mapiranje user_type_id
+            'status' => 'active', // dodaj status kolonu u bazu ili hardkoduj
+            'isOnline' => false, // ili implementiraj online status
+            'created_at' => $player->created_at
+        ];
+    });
 
+    return response()->json([
+        'status' => 'success',
+        'data' => $players,
+    ], 200);
+}
     //READ
     public function show(Player $player)
     {
@@ -89,6 +114,34 @@ class PlayerController extends Controller
             200);
     }
 
+    public function search(Request $request)
+{
+    $query = $request->get('q');
+    
+    if (!$query) {
+        return response()->json([]);
+    }
+    
+    $currentUserId = Auth::id();
+    
+    $users = Player::where('username', 'LIKE', "%{$query}%")
+                  ->where('player_id', '!=', $currentUserId)
+                  ->get()
+                  ->map(function($user) use ($currentUserId) {
+                      // Proveri status prijateljstva
+                      $friendship = Friendship::where(function($q) use ($user, $currentUserId) {
+                          $q->where('player1_id', $currentUserId)->where('player2_id', $user->player_id)
+                            ->orWhere('player1_id', $user->player_id)->where('player2_id', $currentUserId);
+                      })->first();
+                      
+                      $user->isFriend = $friendship && $friendship->status === 'accepted';
+                      $user->requestSent = $friendship && $friendship->status === 'pending' && $friendship->player1_id === $currentUserId;
+                      
+                      return $user;
+                  });
+    
+    return response()->json($users);
+}
 
     public function games(Player $player)
 {
